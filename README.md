@@ -72,6 +72,39 @@ WhisperKit is an [Argmax](https://www.takeargmax.com) framework for deploying st
 
 ## Installation
 
+### Isolated progress-callback correction
+
+The `preserve-absent-progress-callback` branch starts at version 0.17.0,
+commit `26577ce3017aae8c9edfd9a0dd17851bd248c731`. Its only production
+change preserves an absent progress callback through `TranscribeTask.run`.
+Without a consumer, `TextDecoder` must receive `nil`, rather than a wrapper
+that returns `nil`: the wrapper otherwise schedules a detached no-op task
+on each nonterminal decoder iteration.
+
+With a consumer, the existing weak task reference, window ID mapping and
+`Bool?` return value are preserved. Token sampling, fallback safety,
+windowing, cancellation checks, model selection and compute policy do not
+change. Progress construction and early-stop actor bookkeeping in
+`TextDecoder` remain unchanged. This removes unnecessary callback tasks;
+it does not establish a measured prediction-time or wall-time improvement.
+
+`TranscribeTaskCallbackTests` exercises the real transcription task with
+scripted protocol implementations, tiny in-memory arrays, the RAM-only
+padding path and the existing segment seeker. It covers absent/present
+callbacks, all six temperature attempts, multiple windows, output parity,
+error/cancellation propagation and weak ownership. It neither loads a
+model nor downloads a tokenizer, records audio, opens a store or launches
+an application. The selected test suite is:
+
+```bash
+swift test --filter TranscribeTaskCallbackTests
+```
+
+The callback tests assert forwarding at the decoder protocol boundary,
+not actual CoreML performance or detached-task timing. They do not replace
+model-level recognition acceptance. Candidate preparation alone is not
+validation or approval for deployment.
+
 ### Swift Package Manager
 
 WhisperKit, TTSKit, and SpeakerKit are separate library products in the same Swift package. Add the package once and pick the products you need.
