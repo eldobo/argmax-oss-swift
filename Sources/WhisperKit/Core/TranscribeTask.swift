@@ -163,7 +163,7 @@ open class TranscribeTask {
                 Logging.info("Decoding \(Logging.formatTimestamp(timeOffset))s - \(Logging.formatTimestamp(timeOffsetEnd))s")
 
                 // Overload progress callback to include windowId
-                let decodingCallback: ((TranscriptionProgress) -> Bool?) = { [weak self] progress in
+                let decodingCallback: TranscriptionCallback = callback == nil ? nil : { [weak self] progress in
                     guard let self = self, let callback = callback else { return nil }
                     var windowProgress = progress
                     windowProgress.windowId = Int(self.timings.totalDecodingWindows - self.timings.totalDecodingFallbacks)
