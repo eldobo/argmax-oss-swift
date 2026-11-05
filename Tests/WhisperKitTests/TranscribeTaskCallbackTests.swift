@@ -247,7 +247,7 @@ private final class RecordingDecoder: TextDecoding {
     var receivedOptions: [DecodingOptions] = []
     var temperatures: [Float] = []
     var decisions: [Bool?] = []
-    var retainedCallback: TranscriptionCallback
+    var retainedCallback: TranscriptionCallback = nil
     var failAtInvocation: Int?
     var cancelAfterFirstResult = false
 
