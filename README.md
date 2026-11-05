@@ -105,6 +105,17 @@ not actual CoreML performance or detached-task timing. They do not replace
 model-level recognition acceptance. Candidate preparation alone is not
 validation or approval for deployment.
 
+On the `preserve-absent-progress-callback-validated` branch, isolated validation
+on 2026-11-05 compiled and ran the seven tests against baseline
+`b6e1ba3b884a9d71ed5bb0f69851dcb64cffeee0`: six expected absent-callback
+assertion failures in three methods, zero unexpected failures. The same test
+tree passed all seven tests after the one-line correction at `67c75fd`.
+Two disclosed test-only compile corrections precede both runs: explicit nil
+initialization of the callback fixture, and explicit element typing of two
+unchanged expected arrays in existing timestamp-filter assertions.
+These results establish callback forwarding and the scripted contracts above,
+not native inference speed or acoustic recognition quality.
+
 ### Swift Package Manager
 
 WhisperKit, TTSKit, and SpeakerKit are separate library products in the same Swift package. Add the package once and pick the products you need.
